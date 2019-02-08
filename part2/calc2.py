@@ -2,6 +2,7 @@
 # EOF( end-of-file) token is used to indicate that 
 # there is no more input left for lexial analysis
 INTEGER, PLUS, MINUS, EOF = 'INTEGER', 'PLUS', 'MINUS', 'EOF'
+MULT, DIVISION = 'MULT', 'DIVISION'
 
 
 class Token(object):
@@ -61,6 +62,14 @@ class Interpreter(object):
                 self.advance()
                 return Token(PLUS, '+')
             
+            if self.current_char == '/':
+                self.advance()
+                return Token(DIVISION, '-')
+
+            if self.current_char == '*':
+                self.advance()
+                return Token(MULT, '*')
+            
             if self.current_char == '-':
                 self.advance()
                 return Token(MINUS, '-')
@@ -85,6 +94,10 @@ class Interpreter(object):
         op = self.current_token
         if op.type == PLUS:
             self.eat(PLUS)
+        elif op.type == MULT:
+            self.eat(MULT)
+        elif op.type == DIVISION:
+            self.eat(DIVISION)
         else:
             self.eat(MINUS)
         
@@ -93,6 +106,10 @@ class Interpreter(object):
 
         if op.type == PLUS:
             result = left.value + right.value
+        elif op.type == MULT:
+            result = left.value * right.value
+        elif op.type == DIVISION:
+            result = left.value / float(right.value)
         else:
             result = left.value - right.value
         return result
